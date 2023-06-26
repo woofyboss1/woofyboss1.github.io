@@ -20,6 +20,7 @@
       display: flex;
       justify-content: center;
       align-items: center;
+      cursor: pointer;
     }
 
     .white {
@@ -41,14 +42,7 @@
   </div>
 
   <script>
-    // Define the chessboard and piece colors
-    const lightSquareColor = '#f0d9b5';
-    const darkSquareColor = '#b58863';
-    const lightPieceColor = '#f9f9f9';
-    const darkPieceColor = '#666666';
-
-    // Define the chessboard and piece symbols
-    const chessboard = [
+    var chessboard = [
       ['r', 'n', 'b', 'q', 'k', 'b', 'n', 'r'],
       ['p', 'p', 'p', 'p', 'p', 'p', 'p', 'p'],
       ['.', '.', '.', '.', '.', '.', '.', '.'],
@@ -59,7 +53,8 @@
       ['R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R'],
     ];
 
-    // Function to generate the chessboard
+    var selectedPiece = null;
+
     function generateChessboard() {
       var chessboardContainer = document.querySelector('.chessboard');
       var isWhite = true;
@@ -69,25 +64,27 @@
           var square = document.createElement('div');
           square.classList.add('square');
           square.classList.add(isWhite ? 'white' : 'black');
-
-          // Assign unique IDs to each square
-          square.setAttribute('id', 'square' + row + col);
+          square.setAttribute('data-row', row);
+          square.setAttribute('data-col', col);
 
           // Set the background color of the square
-          square.style.backgroundColor = isWhite ? lightSquareColor : darkSquareColor;
+          square.style.backgroundColor = isWhite ? '#f0d9b5' : '#b58863';
 
           // Create the piece element if there is a piece on the square
           var pieceSymbol = chessboard[row][col];
           if (pieceSymbol !== '.') {
             var piece = document.createElement('span');
             piece.classList.add('piece');
+            piece.setAttribute('draggable', true);
 
             // Set the color and symbol of the piece
-            piece.style.color = isWhite ? lightPieceColor : darkPieceColor;
+            piece.style.color = isWhite ? '#f9f9f9' : '#666666';
             piece.innerHTML = getPieceUnicode(pieceSymbol);
 
             square.appendChild(piece);
           }
+
+          square.addEventListener('click', handleSquareClick);
 
           chessboardContainer.appendChild(square);
           isWhite = !isWhite;
@@ -96,20 +93,61 @@
       }
     }
 
-    // Function to get the Unicode symbol of a chess piece
+    function handleSquareClick(event) {
+      var clickedSquare = event.target;
+      var clickedRow = parseInt(clickedSquare.getAttribute('data-row'));
+      var clickedCol = parseInt(clickedSquare.getAttribute('data-col'));
+
+      if (selectedPiece === null) {
+        if (chessboard[clickedRow][clickedCol] !== '.') {
+          selectedPiece = {
+            row: clickedRow,
+            col: clickedCol,
+            symbol: chessboard[clickedRow][clickedCol]
+          };
+        }
+      } else {
+        var targetPieceSymbol = chessboard[clickedRow][clickedCol];
+
+        if (targetPieceSymbol === '.' || isPieceOppositeColor(targetPieceSymbol, selectedPiece.symbol)) {
+          chessboard[clickedRow][clickedCol] = selectedPiece.symbol;
+          chessboard[selectedPiece.row][selectedPiece.col] = '.';
+
+          // Move the piece visually
+          var targetSquare = document.querySelector('[data-row="' + clickedRow + '"][data-col="' + clickedCol + '"]');
+          var selectedSquare = document.querySelector('[data-row="' + selectedPiece.row + '"][data-col="' + selectedPiece.col + '"]');
+          targetSquare.innerHTML = selectedSquare.innerHTML;
+          selectedSquare.innerHTML = '';
+
+          selectedPiece = null;
+        }
+      }
+    }
+
+    function isPieceOppositeColor(piece1, piece2) {
+      return (piece1.toUpperCase() === piece1 && piece2.toUpperCase() === piece2) ||
+        (piece1.toLowerCase() === piece1 && piece2.toLowerCase() === piece2);
+    }
+
     function getPieceUnicode(pieceSymbol) {
       switch (pieceSymbol.toUpperCase()) {
         case 'K':
           return '&#9812;';
         case 'Q':
           return '&#9813;';
-        // Include cases for other piece symbols here
+        case 'R':
+          return '&#9814;';
+        case 'B':
+          return '&#9815;';
+        case 'N':
+          return '&#9816;';
+        case 'P':
+          return '&#9817;';
         default:
           return '';
       }
     }
 
-    // Call the function to generate the chessboard
     generateChessboard();
   </script>
 </body>
