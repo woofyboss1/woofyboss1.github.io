@@ -1,44 +1,105 @@
-
 <!DOCTYPE html>
 <html>
 <head>
-  <title>現在の仮想通貨の価格</title>
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-  <script>
-    // Function to fetch crypto prices from the API
-    function fetchCryptoPrices() {
-      $.ajax({
-        url: 'https://api.your-crypto-api.com/prices', // Replace with the actual API endpoint
-        method: 'GET',
-        success: function(response) {
-          // Process the API response and update the HTML elements
-          var btcPrice = response.btc;
-          var ethPrice = response.eth;
-          var ltcPrice = response.ltc;
-          
-          // Update the HTML elements with the latest prices
-          document.getElementById('btc-price').innerHTML = btcPrice;
-          document.getElementById('eth-price').innerHTML = ethPrice;
-          document.getElementById('ltc-price').innerHTML = ltcPrice;
-        },
-        error: function(error) {
-          console.log('Error:', error);
-        }
-      });
+  <title>Chess</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
     }
 
-    // Fetch crypto prices initially when the page loads
-    fetchCryptoPrices();
+    .chessboard {
+      width: 400px;
+      height: 400px;
+      display: flex;
+      flex-wrap: wrap;
+    }
 
-    // Fetch crypto prices every 10 seconds
-    setInterval(fetchCryptoPrices, 10000);
-  </script>
+    .square {
+      width: 50px;
+      height: 50px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .white {
+      background-color: #f0d9b5;
+    }
+
+    .black {
+      background-color: #b58863;
+    }
+
+    .piece {
+      font-size: 36px;
+    }
+  </style>
 </head>
 <body>
-  <h1>Real-Time Crypto Prices</h1>
+  <div class="chessboard">
+    <!-- Generate chessboard squares using JavaScript -->
+  </div>
 
-  <h2>Bitcoin (BTC): <span id="btc-price"></span></h2>
-  <h2>Ethereum (ETH): <span id="eth-price"></span></h2>
-  <h2>Litecoin (LTC): <span id="ltc-price"></span></h2>
-</body>
-</html>
+  <script>
+    // Define the chessboard and piece colors
+    const lightSquareColor = '#f0d9b5';
+    const darkSquareColor = '#b58863';
+    const lightPieceColor = '#f9f9f9';
+    const darkPieceColor = '#666666';
+
+    // Define the chessboard and piece symbols
+    const chessboard = [
+      ['r', 'n', 'b', 'q', 'k', 'b', 'n', 'r'],
+      ['p', 'p', 'p', 'p', 'p', 'p', 'p', 'p'],
+      ['.', '.', '.', '.', '.', '.', '.', '.'],
+      ['.', '.', '.', '.', '.', '.', '.', '.'],
+      ['.', '.', '.', '.', '.', '.', '.', '.'],
+      ['.', '.', '.', '.', '.', '.', '.', '.'],
+      ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
+      ['R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R'],
+    ];
+
+    // Function to generate the chessboard
+    function generateChessboard() {
+      var chessboardContainer = document.querySelector('.chessboard');
+      var isWhite = true;
+
+      for (var row = 0; row < 8; row++) {
+        for (var col = 0; col < 8; col++) {
+          var square = document.createElement('div');
+          square.classList.add('square');
+          square.classList.add(isWhite ? 'white' : 'black');
+
+          // Assign unique IDs to each square
+          square.setAttribute('id', 'square' + row + col);
+
+          // Set the background color of the square
+          square.style.backgroundColor = isWhite ? lightSquareColor : darkSquareColor;
+
+          // Create the piece element if there is a piece on the square
+          var pieceSymbol = chessboard[row][col];
+          if (pieceSymbol !== '.') {
+            var piece = document.createElement('span');
+            piece.classList.add('piece');
+
+            // Set the color and symbol of the piece
+            piece.style.color = isWhite ? lightPieceColor : darkPieceColor;
+            piece.innerHTML = getPieceUnicode(pieceSymbol);
+
+            square.appendChild(piece);
+          }
+
+          chessboardContainer.appendChild(square);
+          isWhite = !isWhite;
+        }
+        isWhite = !isWhite;
+      }
+    }
+
+    // Function to get the Unicode symbol of a chess piece
+    function getPieceUnicode(pieceSymbol) {
+      switch (pieceSymbol.toUpperCase()) {
+        case 'K':
+          return '&#9812;';
+        case 'Q':
+          return '&#9813;';
