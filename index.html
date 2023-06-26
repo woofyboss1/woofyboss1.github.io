@@ -98,5 +98,19 @@
 
     // Function to get the Unicode symbol of a chess piece
     function getPieceUnicode(pieceSymbol) {
-      switch (
+      switch (pieceSymbol.toUpperCase()) {
+        case 'K':
+          return '&#9812;';
+        case 'Q':
+          return '&#9813;';
+        // Include cases for other piece symbols here
+        default:
+          return '';
+      }
+    }
 
+    // Call the function to generate the chessboard
+    generateChessboard();
+  </script>
+</body>
+</html>
