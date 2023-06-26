@@ -1,2 +1,44 @@
-<h1>nigger.black</h1>
 
+<!DOCTYPE html>
+<html>
+<head>
+  <title>現在の仮想通貨の価格</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script>
+    // Function to fetch crypto prices from the API
+    function fetchCryptoPrices() {
+      $.ajax({
+        url: 'https://api.your-crypto-api.com/prices', // Replace with the actual API endpoint
+        method: 'GET',
+        success: function(response) {
+          // Process the API response and update the HTML elements
+          var btcPrice = response.btc;
+          var ethPrice = response.eth;
+          var ltcPrice = response.ltc;
+          
+          // Update the HTML elements with the latest prices
+          document.getElementById('btc-price').innerHTML = btcPrice;
+          document.getElementById('eth-price').innerHTML = ethPrice;
+          document.getElementById('ltc-price').innerHTML = ltcPrice;
+        },
+        error: function(error) {
+          console.log('Error:', error);
+        }
+      });
+    }
+
+    // Fetch crypto prices initially when the page loads
+    fetchCryptoPrices();
+
+    // Fetch crypto prices every 10 seconds
+    setInterval(fetchCryptoPrices, 10000);
+  </script>
+</head>
+<body>
+  <h1>Real-Time Crypto Prices</h1>
+
+  <h2>Bitcoin (BTC): <span id="btc-price"></span></h2>
+  <h2>Ethereum (ETH): <span id="eth-price"></span></h2>
+  <h2>Litecoin (LTC): <span id="ltc-price"></span></h2>
+</body>
+</html>
